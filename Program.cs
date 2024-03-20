@@ -1,7 +1,6 @@
-﻿using SQLitePCL;
-using sqliteThreads.Model;
+﻿using sqliteThreads.Model;
 
-const int INSERT_COUNT = 10;
+const int INSERT_COUNT = 100;
 object lockOne = new object();
 
 Console.WriteLine("Hello, World!");
@@ -18,7 +17,6 @@ Thread t10 = new Thread(()=>WriteData("T10"));
 Thread t11 = new Thread(()=>WriteData("T11"));
 Thread t12 = new Thread(()=>WriteData("T12"));
 
-
 t.Start();
 t2.Start();
 t3.Start();
@@ -33,22 +31,23 @@ t10.Start();
 t11.Start();
 t12.Start();
 
+WriteData("Main");
+
 void WriteData(string threadId){
     ThreadDataContext db = null;
     lock (lockOne){
         db = new ThreadDataContext();
     }
     
-    for (int i = 0; i<=INSERT_COUNT;i++){
+    for (int i = 0; i < INSERT_COUNT;i++){
         try{
-        ThreadData td = new ThreadData{ThreadId=threadId, Created=DateTime.Now};
-        db.Add(td);
-        db.SaveChanges();
+            ThreadData td = new ThreadData{ThreadId=threadId, Created=DateTime.Now};
+            db.Add(td);
+            db.SaveChanges();
         }
         catch(Exception ex){
             Console.WriteLine($"Error: ${threadId} => ${ex.InnerException.Message}");
             continue;
         }
-        Thread.Sleep(5);
     }
 }
