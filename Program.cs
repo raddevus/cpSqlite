@@ -34,10 +34,8 @@ t12.Start();
 WriteData("Main");
 
 void WriteData(string threadId){
-    ThreadDataContext db = null;
-    lock (lockOne){
-        db = new ThreadDataContext();
-    }
+     
+    ThreadDataContext db = new ThreadDataContext();
     
     for (int i = 0; i < INSERT_COUNT;i++){
         try{
