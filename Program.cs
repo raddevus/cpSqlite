@@ -1,9 +1,20 @@
 ﻿using sqliteThreads.Model;
 
-const int INSERT_COUNT = 100;
-object lockOne = new object();
+const int INSERT_COUNT = 10;
+int insert_count = 0;
+if (args.Length > 0){
+    try{
+      insert_count = Int32.Parse(args[0]);
+    }
+    catch{
+        insert_count = INSERT_COUNT;
+    }
+}
+else{
+    insert_count = INSERT_COUNT;
+}
 
-Console.WriteLine("Hello, World!");
+Console.WriteLine($"#### Inserting {insert_count} records for each thread. ####");
 Thread t = new Thread(() => WriteData("T1"));
 Thread t2 = new Thread(() => WriteData("T2"));
 Thread t3 = new Thread(()=>WriteData("T3"));
@@ -35,16 +46,17 @@ WriteData("Main");
 
 void WriteData(string threadId){
     ThreadDataContext db = new ThreadDataContext();
-    
-    for (int i = 0; i < INSERT_COUNT;i++){
+    var beginTime = DateTime.Now;
+    for (int i = 0; i < insert_count;i++){
         try{
             ThreadData td = new ThreadData{ThreadId=threadId, Created=DateTime.Now};
             db.Add(td);
             db.SaveChanges();
         }
         catch(Exception ex){
-            Console.WriteLine($"Error: ${threadId} => ${ex.InnerException.Message}");
+            Console.WriteLine($"Error: {threadId} => {ex.InnerException.Message}");
             continue;
         }
     }
+    Console.WriteLine($"{threadId}: Completed - {DateTime.Now - beginTime}");
 }
