@@ -1,6 +1,6 @@
 ﻿using sqliteThreads.Model;
 
-const int INSERT_COUNT = 10;
+const int INSERT_COUNT = 100;
 int insert_count = 0;
 if (args.Length > 0){
     try{
