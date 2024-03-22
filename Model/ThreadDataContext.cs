@@ -25,10 +25,13 @@ public class ThreadDataContext : DbContext
         SqliteCommand command = connection.CreateCommand();
         FileInfo fi = new FileInfo(DbPath);
         if (fi.Length == 0){
-            foreach (String tableCreate in allTableCreation){
-                command.CommandText = tableCreate;
-                command.ExecuteNonQuery();
+            try{
+                foreach (String tableCreate in allTableCreation){
+                    command.CommandText = tableCreate;
+                    command.ExecuteNonQuery();
+                }
             }
+            catch{} // insuring that multiple threads don't try to create table
         }
     }
 
